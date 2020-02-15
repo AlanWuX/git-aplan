@@ -1,0 +1,36 @@
+server:
+  port: 8050
+#spring.cloud.loadbalancer.retry.enabled=true
+spring:
+  cloud:
+    loadbalancer:
+      retry:
+        enabled: true  application:    name: gateway-zuul
+eureka:
+  client:
+    service-url:
+      defaultZone: http://user:password123@localhost:8761/eureka
+#ignored-services,忽略其他,代理指定服务
+zuul:  retryable: true  ribbon-isolation-strategy: thread
+  ignoredServices: '*'
+  routes:
+    app-provider-user:
+      path: /mango/**
+      serviceId: mango-feign-hystrix
+      
+#zuul继承hystrix默认1s,这里如果不设置超时时间就会报错
+ribbon:
+  MaxAutoRetries: 1 #最大重试次数，当Eureka中可以找到服务，但是服务连不上时将会重试
+  MaxAutoRetriesNextServer: 1 #切换实例的重试次数
+  ReadTimeout: 5800
+  ConnectTimeout: 5000
+
+#设置熔断时间 ReadTimeout+（MaxAutoRetries * ReadTimeout）+ ReadTimeout+（MaxAutoRetries * ReadTimeout）= 4000ms
+#熔断机制
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 29000

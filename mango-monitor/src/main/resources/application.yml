@@ -1,0 +1,10 @@
+server:
+  port: 8000
+spring:
+  application:
+    name: mango-monitor
+#eureka
+eureka:
+  client:
+    service-url:
+      defaultZone: http://user:password123@localhost:8761/eureka

@@ -1,0 +1,30 @@
+server:
+  port: 9001
+spring:  application:    name: mango-feign-hystrix
+  main:    allow-bean-definition-overriding: true
+eureka:
+  client:
+    service-url:
+      defaultZone: http://user:password123@localhost:8761/eureka
+logging:
+  level:
+    root: INFO 
+feign:  hystrix:    enabled: true
+
+ribbon:
+  MaxAutoRetries: 1 #最大重试次数，当Eureka中可以找到服务，但是服务连不上时将会重试
+  MaxAutoRetriesNextServer: 1 #切换实例的重试次数
+  ReadTimeout: 2800
+  ConnectTimeout: 2000
+  
+#设置熔断时间 ReadTimeout+（MaxAutoRetries * ReadTimeout）+ ReadTimeout+（MaxAutoRetries * ReadTimeout）= 4000ms
+#熔断机制
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 11200
+
+
